@@ -6,7 +6,7 @@ pipeline {
     }
     environment { 
         packageVersion = ''
-        // nexusURL = '172.31.5.95:8081'
+        nexusURL = '172.31.88.161:8081'
     }
     options {
         timeout(time: 1, unit: 'HOURS')
@@ -55,34 +55,34 @@ pipeline {
         //         """
         //     }
         // }
-        // stage('Build') {
-        //     steps {
-        //         sh """
-        //             ls -la
-        //             zip -q -r catalogue.zip ./* -x ".git" -x "*.zip"
-        //             ls -ltr
-        //         """
-        //     }
-        // }
-        // stage('Publish Artifact') {
-        //     steps {
-        //          nexusArtifactUploader(
-        //             nexusVersion: 'nexus3',
-        //             protocol: 'http',
-        //             nexusUrl: "${nexusURL}",
-        //             groupId: 'com.roboshop',
-        //             version: "${packageVersion}",
-        //             repository: 'catalogue',
-        //             credentialsId: 'nexus-auth',
-        //             artifacts: [
-        //                 [artifactId: 'catalogue',
-        //                 classifier: '',
-        //                 file: 'catalogue.zip',
-        //                 type: 'zip']
-        //             ]
-        //         )
-        //     }
-        // }
+        stage('Build') {
+            steps {
+                sh """
+                    ls -la
+                    zip -q -r catalogue.zip ./* -x ".git" -x "*.zip"
+                    ls -ltr
+                """
+            }
+        }
+        stage('Publish Artifact') {
+            steps {
+                 nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "${nexusURL}",
+                    groupId: 'com.roboshop',
+                    version: "${packageVersion}",
+                    repository: 'catalogue',
+                    credentialsId: 'nexus-auth',
+                    artifacts: [
+                        [artifactId: 'catalogue',
+                        classifier: '',
+                        file: 'catalogue.zip',
+                        type: 'zip']
+                    ]
+                )
+            }
+        }
         stage('Deploy') {
             when {
                 expression{
@@ -112,5 +112,6 @@ pipeline {
         success{
             echo 'I will say Hello when pipeline is success'
         }
+
     }
 }
